@@ -2999,6 +2999,11 @@ cliui@^7.0.2:
     strip-ansi "^6.0.0"
     wrap-ansi "^7.0.0"
 
+clsx@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
+  integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
+
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
@@ -5728,6 +5733,11 @@ language-tags@^1.0.5:
   integrity sha512-qJhlO9cGXi6hBGKoxEG/sKZDAHD5Hnu9Hs4WbOY3pCWXDhw0N8x1NenNzm2EnNLkLkk7J2SdxAkDSbb6ftT+UQ==
   dependencies:
     language-subtag-registry "~0.3.2"
+
+leaflet.animatedmarker@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/leaflet.animatedmarker/-/leaflet.animatedmarker-1.0.0.tgz#af96e2da8f9772aa189456cc4c1b7902b5fdc284"
+  integrity sha512-dURiGulr/wTf2/jY1b5JxETpPdNIvU5UGtmmz3FIjdImEfbYShgZHwRepeywjjE7m02kF8nLjD5juE1z+tnWkA==
 
 leaflet@^1.8.0:
   version "1.8.0"

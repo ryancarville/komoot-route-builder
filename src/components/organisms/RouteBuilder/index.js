@@ -2,17 +2,36 @@ import React, { Component } from "react";
 import RouteList from "../../molecules/RouteList"
 import Map from '../../molecules/Map'
 import '../../../styles/routeBuilder.css'
+import ToolBar from '../ToolBar'
+import { unitTypes } from "../../../constants/common"
+import useLocalStorage from "../../../hooks/localStorage"
 
 // component for route builder
 class RouteBuilder extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      markers: []
+      markers: [],
+      currentDistance: 0.00,
+      unitType: unitTypes.miles
     };
     this.waypointPrefix = 'Waypoint';
   }
 
+  // check if there is a saved route
+  componentDidMount() {
+    const ls = new useLocalStorage();
+    const savedRoute = ls.getItem('route');
+    const savedUnits = ls.getItem('units');
+    if (savedRoute) {
+      const markers = JSON.parse(savedRoute);
+      this.setState({markers, unitType: savedUnits})
+    }
+  }
+  // handle sorting array
+  handleSort = (array) => {
+    return array.sort((a, b) => a.id - b.id);
+  };
   // add new waypoint to list
   handleAddWaypoint = (newMarker) => {
     const id = this.state.markers.length + 1;
@@ -22,7 +41,7 @@ class RouteBuilder extends Component {
       id
     };
     this.setState({
-      markers: [...this.state.markers, mark]
+      markers: this.handleSort([...this.state.markers, mark])
     });
   };
 
@@ -32,11 +51,14 @@ class RouteBuilder extends Component {
     const updatedIds = currWaypoint.map((point) => {
       if (point.id < id) return point;
       point.id--;
-      point.name = `${this.waypointPrefix} ${point.id}`;
+      if (point.name.includes(this.waypointPrefix)) {
+        point.name = `${this.waypointPrefix} ${point.id}`;
+      }
+
       return point;
     });
     this.setState({
-      markers: updatedIds
+      markers: this.handleSort(updatedIds)
     });
   };
 
@@ -44,6 +66,20 @@ class RouteBuilder extends Component {
     this.setState({
       dragId: +ev.target.id
     });
+  };
+
+  handleMarkerMove = (newMarkCoords) => {
+    const { markers } = this.state;
+    const oldMarker = markers.find((m) => m.name === newMarkCoords.name);
+    const newMarker = {
+      ...oldMarker,
+      lat: newMarkCoords.lat,
+      lng: newMarkCoords.lng
+    };
+
+    const prevMarkers = markers.filter((m) => m.id !== oldMarker.id);
+    const updatedMarkers = [...prevMarkers, newMarker];
+    this.setState({ markers: this.handleSort(updatedMarkers) });
   };
 
   handleDrop = (ev) => {
@@ -54,51 +90,77 @@ class RouteBuilder extends Component {
     const dragBoxOrder = dragBox.id;
     const dropBoxOrder = dropBox.id;
 
-    const newMarkersState = markers.map((box) => {
-      // if box if higher than moved box and lower than destination box
-      if (box.id > dragBoxOrder && dropBoxOrder > box.id) {
-        box.id--;
-        box.name = `${this.waypointPrefix} ${box.id}`;
-        return box;
-      } // if box if higher than moved box and higher than destination box
-      else if (box.id > dragBoxOrder && dropBoxOrder < box.id) {
-        return box;
-      } // if box if lower than moved box and higher or equal to destination box
-      else if (box.id < dragBoxOrder && dropBoxOrder <= box.id) {
-        box.id++;
-        box.name = `${this.waypointPrefix} ${box.id}`
-        return box;
-      } // if box is moved box
-      else if (box.id === dragBoxOrder) {
-        box.id = dropBoxOrder;
-        box.name = `${this.waypointPrefix} ${box.id}`;
-        return box;
-      } // if box is destination box
-      else if (box.id === dropBoxOrder) {
-        box.id--;
-        box.name = `${this.waypointPrefix} ${box.id}`;
-        return box;
+    const newMarkersState = markers.map((mark) => {
+      // if mark if higher than moved mark and higher than destination mark
+      if (mark.id > dragBoxOrder && dropBoxOrder < mark.id) {
+        return mark;
       }
-      return box;
+      // if mark if higher than moved mark and lower than destination mark
+      else if (mark.id > dragBoxOrder && dropBoxOrder > mark.id) {
+        mark.id--;
+      } // if mark if lower than moved mark and higher or equal to destination mark
+      else if (mark.id < dragBoxOrder && dropBoxOrder <= mark.id) {
+        mark.id++;
+      } // if mark is moved mark
+      else if (mark.id === dragBoxOrder) {
+        mark.id = dropBoxOrder;
+      } // if mark is destination mark
+      else if (mark.id === dropBoxOrder) {
+        mark.id--;
+      }
+
+      if (mark.name.includes(this.waypointPrefix)) {
+        mark.name = `${this.waypointPrefix} ${mark.id}`;
+      }
+
+      return mark;
     });
 
     this.setState({
-      markers: [...newMarkersState]
+      markers: this.handleSort(newMarkersState)
     });
   };
+
+  // update state with new marker name
+  handleNameChange = (markerToChange) => {
+    const { markers } = this.state;
+    const currMarker = markers.find((m) => m.id === markerToChange.id);
+    currMarker.name = markerToChange.name;
+    const prevState = markers.filter((m) => m.id !== markerToChange.id);
+    this.setState({
+      markers: this.handleSort([...prevState, currMarker])
+    });
+  };
+
+  handleDistance = (distance) => this.setState({ currentDistance: distance });
+
+  handleUnitChange = (unit) => {
+    this.setState({ unitType: unit })
+  }
 
   render() {
     return (
       <section className={'routeBuilderWrapper'}>
-        <RouteList
-          markers={this.state.markers}
-          removeWaypoint={this.handleRemoveWaypoint}
-          handleDrag={this.handleDrag}
-          handleDrop={this.handleDrop}
-        />
+        <aside className={'routeBuilderSideBar'}>
+          <ToolBar
+            handleUnitType={this.handleUnitChange}
+          />
+          <RouteList
+            markers={this.state.markers}
+            removeWaypoint={this.handleRemoveWaypoint}
+            handleDrag={this.handleDrag}
+            handleDrop={this.handleDrop}
+            handleNameChange={this.handleNameChange}
+            currentDistance={`${this.state.currentDistance} ${this.state.unitType}`}
+            currentUnits={this.state.unitType}
+          />
+        </aside>
         <Map
-          handleMapClick={this.handleAddWaypoint}
           markers={this.state.markers}
+          handleMapClick={this.handleAddWaypoint}
+          handleMarkerMove={this.handleMarkerMove}
+          handleDistance={this.handleDistance}
+          unitType={this.state.unitType}
         />
       </section>
     );

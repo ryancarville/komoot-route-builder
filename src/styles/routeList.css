@@ -1,6 +1,6 @@
 .routeListWrapper {
   display: flex;
-  width: 40em;
+  width: 100vw;
   height: 100vh;
   overflow: auto;
   max-width: 40em;
@@ -8,7 +8,6 @@
   align-items: center;
   background-color: rgb(26, 52, 52);
   justify-content: center;
-  resize: horizontal;
 }
 
 .routeListHeader {
@@ -20,32 +19,81 @@
   color: white;
 }
 
+.instructionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.instructionsHeader span {
+  font-size: 40px;
+  cursor: pointer;
+  margin-top: 5px
+}
+.routeBuilderInstructions {
+  color: white;
+  margin: 0 30px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  font-size: 16px;
+  border-bottom: 2px solid slategray;
+}
+
+.closedRouteBuilderInstructions {
+  color: white;
+  margin: 0 30px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  font-size: 16px;
+  height: 100px;
+  min-height: 85px;
+  overflow: hidden;
+  border-bottom: 2px solid slategray;
+}
+
+.instructionsList > li {
+  list-style-image: url('../images/check.png');
+  list-style-type: none;
+  line-height: 2em;
+}
+
 .routeList {
-  width: 100%;
   height: 100vh;
   text-align: center;
   margin-top: 2em;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
+  overflow-y: scroll;
 }
-.waypointItem {
-  width: 100%;
-  display: flex;
-  font-size: 25px;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 30px 0px 30px;
-}
-
 .waypointContent {
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
 
-.waypointContent p {
-  margin-left: 10px
+.waypointItem {
+  width: 100vw;
+  display: inline-flex;
+  font-size: 25px;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0px 30px 0px 30px;
+  cursor: pointer;
+  margin: 5px 0 5px 0;
+}
+.waypointItem:hover {
+  background-color: rgba(0, 255, 47, 0.3);
+}
+
+.waypointNameInput {
+  margin-left: 10px;
+  background-color: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 25px;
+  width: 200px;
 }
 
 .waypointItem svg {
@@ -53,18 +101,71 @@
   cursor: pointer;
 }
 
-.downloadWrapper {
-  margin: 0 0 3em 0;
-  width: 90%;
+.routeTotalsWrapper {
+  color: white;
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  font-weight: 400;
 }
-.gpxDownloadBtn{
+
+.downloadWrapper {
+  margin: 0 0 1em 0;
+  width: 95%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.routeSavedMsg {
+  color: white;
+  width: 275px;
+  height: 50px;
+  z-index: 100;
+  position: absolute;
+  background-color: orange;
+  bottom: 130px;
+  border-radius: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  font-weight: 400;
+}
+.gpxDownloadBtn {
   background-color: lime;
   color: white;
-  width: 100%;
-  padding: 15px;
-  border: none;
-  border-radius: 3em 3em 3em 3em;
-  font-size: 25px;
-  font-weight: 800;
-  cursor: pointer;
+  margin: 5px;
+}
+.gpxDownloadBtn:hover {
+  background-color: lightgreen;
+}
+
+.saveRouteBtn {
+  background-color: lightskyblue;
+  color: white;
+  margin: 5px;
+}
+
+.saveRouteBtn:hover {
+  background-color: lightblue;
+}
+
+@media screen and (min-width: 500px) {
+  .downloadWrapper{
+    flex-direction: row;
+  }
+  .closedRouteBuilderInstructions {
+    min-height: 70px;
+  }
+  .waypointItem {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .waypointNameInput {
+    width: 100%;
+  }
+
 }

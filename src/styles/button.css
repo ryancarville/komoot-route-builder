@@ -1,0 +1,9 @@
+.btnBase {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 3em 3em 3em 3em;
+  font-size: 25px;
+  font-weight: 800;
+  cursor: pointer;
+}
