@@ -1,0 +1,14 @@
+.mapWrapper {
+  width: 65vw;
+  height: 100vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: green;
+  overflow: hidden;
+}
+
+#map {
+  height: 100vh;
+  width: 100vw;
+}

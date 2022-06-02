@@ -1,24 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import PageLayout from './components/organisms/PageLayout/index'
+import RouteBuilder from './components/organisms/RouteBuilder'
 
-function App() {
+function App () {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <PageLayout
+      pageTitle={'Komoot: Route Builder'}
+      description={'Build your own cross country running route in seconds'}
+      url={'https://www.komoot.com'}
+      image={
+        'https://www.komoot.com/images/og-images/og-image-default-en.png'
+      }
+      lang={'en'}
+    >
+      <RouteBuilder/>
+    </PageLayout>
   );
 }
 

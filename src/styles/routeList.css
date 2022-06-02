@@ -1,0 +1,70 @@
+.routeListWrapper {
+  display: flex;
+  width: 40em;
+  height: 100vh;
+  overflow: auto;
+  max-width: 40em;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(26, 52, 52);
+  justify-content: center;
+  resize: horizontal;
+}
+
+.routeListHeader {
+  border-bottom: 2px solid slategrey;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  color: white;
+}
+
+.routeList {
+  width: 100%;
+  height: 100vh;
+  text-align: center;
+  margin-top: 2em;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+.waypointItem {
+  width: 100%;
+  display: flex;
+  font-size: 25px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 30px 0px 30px;
+}
+
+.waypointContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.waypointContent p {
+  margin-left: 10px
+}
+
+.waypointItem svg {
+  color: lightslategrey;
+  cursor: pointer;
+}
+
+.downloadWrapper {
+  margin: 0 0 3em 0;
+  width: 90%;
+}
+.gpxDownloadBtn{
+  background-color: lime;
+  color: white;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 3em 3em 3em 3em;
+  font-size: 25px;
+  font-weight: 800;
+  cursor: pointer;
+}
