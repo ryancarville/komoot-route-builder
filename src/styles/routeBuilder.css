@@ -2,19 +2,44 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: flex-start;
+  background-color: rgb(26,
+    52,
+    52);
+    align-items: flex-start;
 }
 
 .routeBuilderSideBar {
   height: 100vh;
-  width: auto;
+  width: 100vw;
   display: flex;
   flex-direction: column;
   min-width: 350px;
+  z-index: 1000;
+  background-color: transparent;
+}
+
+.closedSideBar{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20000;
+  margin: 0;
+  animation-name: sideBarClose;
+  animation-duration: 2s;
+}
+
+.closedSideBar div {
+  width: 70px;
+  height: 70px;
+  background-color: white;
+  margin: 0;
 }
 
 @media screen and (min-width: 500px) {
   .routeBuilderWrapper {
     flex-direction: row;
+  }
+  .routeBuilderSideBar {
+    width: 40em;
   }
 }

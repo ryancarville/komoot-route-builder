@@ -2,7 +2,52 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px 30px;
+  width: 100%;
+  background-color: white;
+  animation-name: toolBarOpen;
+  animation-duration: .5s;
+  animation-timing-function: ease-in-out;
+}
+
+.toolBarClose {
+  width: 80px;
+  height: 80px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.toolBarLogo {
+  cursor: pointer;
+  width: 70px;
+  height: 70px;
+  /* padding: 10px; */
+  object-fit: contain;
+  background-color: white;
+}
+
+.logoTooltip {
+  position: relative;
+  border-bottom: 1px dotted black;
+}
+
+.logoTooltipTxt {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  top: 20px;
+  left: 5em;
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 100;
+}
+.toolBarLogo:hover > .logoTooltipTxt {
+  visibility: visible;
 }
 
 .untBtnWrapper {
@@ -21,4 +66,16 @@
 }
 .unitBtn:hover {
   border-bottom: 3px solid aquamarine;
+}
+
+@keyframes toolBarOpen {
+  from {
+    width: 0%;
+    opacity: 0;
+  }
+
+  to {
+    width: 100%;
+    opacity: 1;
+  }
 }

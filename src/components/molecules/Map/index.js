@@ -3,10 +3,12 @@ import L from 'leaflet';
 import 'leaflet.animatedmarker/src/AnimatedMarker';
 import '../../../styles/map.css'
 import { unitTypes } from '../../../constants/common';
+import waypointMarker from '../../atoms/WaypointMarker'
 
 class Map extends Component {
   constructor(props) {
     super(props);
+    this.map = undefined;
     this.state = {
       startLocation: navigator.geolocation.getCurrentPosition((position) => ({
         lat: position.coords.latitude,
@@ -59,8 +61,9 @@ class Map extends Component {
   }
 
   componentDidUpdate() {
-    const { markers } = this.props;
+    const { markers, isSideBarOpen } = this.props;
     const { startLocation, waypointCount } = this.state;
+
 
     if (startLocation && !!!this.map) {
       // create map
@@ -74,26 +77,35 @@ class Map extends Component {
           })
         ]
       });
+      // add click event listener to map
       this.map.on('click', this.handleMapClick);
+      // add new layer for markers/paths to map
       this.layer = L.layerGroup().addTo(this.map);
+      // check the size is correct
+      this.map.invalidateSize();
 
       this.setState({ isLoading: false });
     }
 
     if (this.map) {
+
+      // resize map if sidebar closes
+      if (!isSideBarOpen) this.map._map.invalidateSize();
+
       // clear the marker/path layer if there are no markers or if the amount drops or order changes
       if (markers.length === 0 || markers.length <= waypointCount)
-      this.layer.clearLayers();
+        this.layer.clearLayers();
 
       // create or update markers and paths
       if (markers.length > 0) this.handleMarkers();
 
       // update waypoint count
       if (markers.length !== waypointCount)
-      this.setState({ waypointCount: markers.length });
+        this.setState({ waypointCount: markers.length });
 
       // update distance if units change
-      if (this.props.unitType !== this.state.currUnitType) this.updateDistance();
+      if (this.props.unitType !== this.state.currUnitType)
+        this.updateDistance();
     }
   }
 
@@ -106,21 +118,26 @@ class Map extends Component {
     };
     this.props.handleMarkerMove(parsedData);
   };
-
   // add markers and paths to map
   handleMarkers = () => {
     const { markers } = this.props;
     // markers
-    markers.map((m) =>
+    markers.forEach((m) => {
+      var popup = L.popup()
+        .setLatLng([m.lat, m.lng])
+        .setContent(`<span class='markerPopup'>${m.name}</span>`);
+
       L.marker(m, {
+        icon: waypointMarker(m.id),
         title: m.name,
         alt: m.name,
         draggable: true,
-        autoPan: true
-      })
-        .addEventListener('moveend', this.handleMarkerDrag)
-        .addTo(this.layer)
-    );
+        autoPan: true,
+        riseOnHover: true,
+      }).bindPopup(popup).openPopup()
+      .addEventListener('moveend', this.handleMarkerDrag)
+      .addTo(this.layer)
+    })
 
     this.map = L.polyline(
       markers.map((m) => [m.lat, m.lng]),

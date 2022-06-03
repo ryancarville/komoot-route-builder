@@ -11,9 +11,11 @@ class RouteBuilder extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      routeTitle: 'Komoot Route',
       markers: [],
-      currentDistance: 0.00,
-      unitType: unitTypes.miles
+      currentDistance: 0.0,
+      unitType: unitTypes.miles,
+      isSideBarOpen: true,
     };
     this.waypointPrefix = 'Waypoint';
   }
@@ -21,11 +23,16 @@ class RouteBuilder extends Component {
   // check if there is a saved route
   componentDidMount() {
     const ls = new useLocalStorage();
+    const savedTitle = ls.getItem('routeTitle');
     const savedRoute = ls.getItem('route');
     const savedUnits = ls.getItem('units');
     if (savedRoute) {
       const markers = JSON.parse(savedRoute);
-      this.setState({markers, unitType: savedUnits})
+      this.setState({
+        routeTitle: savedTitle ? savedTitle : this.state.routeTitle,
+        markers,
+        unitType: savedUnits ? savedUnits : this.state.unitType
+      });
     }
   }
   // handle sorting array
@@ -47,19 +54,22 @@ class RouteBuilder extends Component {
 
   // delete selected waypoint from list
   handleRemoveWaypoint = (id) => {
-    const currWaypoint = this.state.markers.filter((mark) => mark.id !== id);
-    const updatedIds = currWaypoint.map((point) => {
-      if (point.id < id) return point;
-      point.id--;
-      if (point.name.includes(this.waypointPrefix)) {
-        point.name = `${this.waypointPrefix} ${point.id}`;
-      }
+    if (id === 'all') this.setState({markers: []});
+    else {
+      const currWaypoint = this.state.markers.filter((mark) => mark.id !== id);
+      const updatedIds = currWaypoint.map((point) => {
+        if (point.id < id) return point;
+        point.id--;
+        if (point.name.includes(this.waypointPrefix)) {
+          point.name = `${this.waypointPrefix} ${point.id}`;
+        }
 
-      return point;
-    });
-    this.setState({
-      markers: this.handleSort(updatedIds)
-    });
+        return point;
+      });
+      this.setState({
+        markers: this.handleSort(updatedIds)
+      });
+    }
   };
 
   handleDrag = (ev) => {
@@ -121,6 +131,9 @@ class RouteBuilder extends Component {
     });
   };
 
+  handleRouteTitleChange = (title) => {
+    this.setState({routeTitle: title})
+  }
   // update state with new marker name
   handleNameChange = (markerToChange) => {
     const { markers } = this.state;
@@ -135,21 +148,33 @@ class RouteBuilder extends Component {
   handleDistance = (distance) => this.setState({ currentDistance: distance });
 
   handleUnitChange = (unit) => {
-    this.setState({ unitType: unit })
-  }
+    this.setState({ unitType: unit });
+  };
 
+  handleSideBar = () => this.setState({isSideBarOpen: !this.state.isSideBarOpen})
+
+  
   render() {
     return (
       <section className={'routeBuilderWrapper'}>
-        <aside className={'routeBuilderSideBar'}>
+        <aside
+          className={
+            this.state.isSideBarOpen ? 'routeBuilderSideBar' : 'closedSideBar'
+          }
+        >
           <ToolBar
             handleUnitType={this.handleUnitChange}
+            currUnitType={this.state.unitType}
+            handleSideBar={this.handleSideBar}
           />
           <RouteList
+            isSideBarOpen={this.state.isSideBarOpen}
+            routeTitle={this.state.routeTitle}
             markers={this.state.markers}
             removeWaypoint={this.handleRemoveWaypoint}
             handleDrag={this.handleDrag}
             handleDrop={this.handleDrop}
+            handleRouteTitleChange={this.handleRouteTitleChange}
             handleNameChange={this.handleNameChange}
             currentDistance={`${this.state.currentDistance} ${this.state.unitType}`}
             currentUnits={this.state.unitType}
@@ -157,6 +182,7 @@ class RouteBuilder extends Component {
         </aside>
         <Map
           markers={this.state.markers}
+          isSideBarOpen={this.state.isSideBarOpen}
           handleMapClick={this.handleAddWaypoint}
           handleMarkerMove={this.handleMarkerMove}
           handleDistance={this.handleDistance}

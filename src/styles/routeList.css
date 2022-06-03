@@ -1,13 +1,16 @@
 .routeListWrapper {
   display: flex;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-  max-width: 40em;
+  width: 100%;
+  height: auto;
   flex-direction: column;
   align-items: center;
   background-color: rgb(26, 52, 52);
   justify-content: center;
+  animation-name: routeListOpen;
+  animation-duration: .3s;
+}
+.routeListWrapperClose {
+  display: none;
 }
 
 .routeListHeader {
@@ -30,9 +33,12 @@
   cursor: pointer;
   margin-top: 5px
 }
+
 .routeBuilderInstructions {
   color: white;
   margin: 0 30px;
+  width: auto;
+  height: 45em;
   font-weight: 500;
   letter-spacing: 0.8px;
   font-size: 16px;
@@ -45,28 +51,39 @@
   font-weight: 500;
   letter-spacing: 0.8px;
   font-size: 16px;
-  height: 100px;
+  height: 1em;
   min-height: 85px;
   overflow: hidden;
   border-bottom: 2px solid slategray;
 }
 
+.instructionsList {
+  padding-left: 10px;
+}
 .instructionsList > li {
   list-style-image: url('../images/check.png');
   list-style-type: none;
-  line-height: 2em;
+  line-height: 1.5em;
+  margin: 10px;
+  list-style-position: inside;
+}
+
+.instructionsList > li:before {
+  content: "";
+  margin-top: 100px
 }
 
 .routeList {
-  height: 100vh;
+  height: 18em;
   text-align: center;
-  margin-top: 2em;
+  margin: 2em 0 2em 0;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
   overflow-y: scroll;
 }
 .waypointContent {
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -86,6 +103,15 @@
   background-color: rgba(0, 255, 47, 0.3);
 }
 
+.routeTitleInput {
+  margin: 15px;
+  background-color: transparent;
+  color: white;
+  border: none;
+  font-size: 25px;
+  width: auto;
+  text-align: center;
+}
 .waypointNameInput {
   margin-left: 10px;
   background-color: transparent;
@@ -110,7 +136,7 @@
 }
 
 .downloadWrapper {
-  margin: 0 0 1em 0;
+  margin: 0 0 1.5em 0;
   width: 95%;
   height: auto;
   display: flex;
@@ -153,9 +179,55 @@
   background-color: lightblue;
 }
 
+.deleteAllMsgWrapper {
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+.deleteAllMsg {
+  width: 25em;
+  height: auto;
+  background-color: white;
+  text-align: center;
+  padding: 2em;
+}
+
+.deleteAllMsg p {
+  font-weight: 600;
+  font-size: 25px;
+  color: black;
+}
+
+.deleteAllBtnConfirm {
+  background-color: lime;
+  width: 50%;
+}
+
+.deleteAllBtnCancel {
+  background-color: transparent;
+  width: 50%;
+}
 @media screen and (min-width: 500px) {
+  .routeListWrapper {
+    height: 100vh;
+    overflow: hidden;
+    justify-content: flex-start;
+  }
+  .routeList {
+    height: 100vh
+  }
   .downloadWrapper{
     flex-direction: row;
+  }
+  .routeBuilderInstructions {
+    height: auto;
   }
   .closedRouteBuilderInstructions {
     min-height: 70px;
@@ -168,4 +240,16 @@
     width: 100%;
   }
 
+}
+
+@keyframes routeListOpen {
+  from {
+    width: 0px;
+    opacity: 0;
+  }
+
+  to {
+    width: 40em;
+    opacity: 1;
+  }
 }
