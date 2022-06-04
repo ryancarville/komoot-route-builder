@@ -11,10 +11,6 @@ class Map extends Component {
     super(props);
     this.map = undefined;
     this.state = {
-      startLocation: {
-        lat: undefined,
-        lng: undefined
-      },
       waypointCount: undefined,
       isLoading: true,
       currUnitType: this.props.unitType
@@ -38,70 +34,56 @@ class Map extends Component {
     });
   }
 
-  getUserLocation = () => {
-    if(navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.setState({
-          startLocation: {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          }
-        });
-      });
-    } else {
-      this.setState({ startLocation: {
-        lat: 0,
-        lng: 0
-      }})
-    }
-  };
-
-  getCurrDistance = () => this.map.getDistance(this.props.unitType).toFixed(2);
-
-  updateDistance = () => {
-    const currDist = this.getCurrDistance();
-    this.props.handleDistance(currDist);
-    this.setState({ currUnitType: this.props.unitType, currDist });
-  };
-
   componentDidMount() {
-    if (!!!this.state.startLocation.lat) this.getUserLocation();
+    const { markers } = this.props;
+    // only create the map if not already initialized
+    if (!!!this.map) {
+      // create map
+      this.map = L.map('map', {
+        layers: [
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 20,
+            attribution: '© OpenStreetMap'
+          })
+        ]
+      }).fitWorld();
+
+      // add error handle is location not found
+      this.map.on('locationerror', this.handleLocationError);
+
+      // add click event listener to map
+      this.map.on('click', this.handleMapClick);
+
+      // add new layer for markers/paths to map
+      this.layer = L.layerGroup().addTo(this.map);
+
+      // check the size is correct
+      this.map.invalidateSize();
+
+      // set zoom controller location
+      this.map.zoomControl.setPosition('topright');
+
+      // if saved markers set view to them else set view to current location
+      if (markers.length > 0) {
+        const currView = [markers[0].lat, markers[0].lng];
+        this.map.setView(currView, 15);
+      } else {
+        // set location to uses location
+        this.map.locate({ setView: true, maxZoom: 15 });
+      }
+      // mock data fetch
+      setTimeout(() => {
+        this.setState({ isLoading: false });
+      }, 2500);
+    }
   }
 
   componentDidUpdate() {
     const { markers, unitType } = this.props;
-    const { startLocation, waypointCount, currUnitType } = this.state;
+    const { waypointCount, currUnitType } = this.state;
 
-    // only create the map is not already initialized
-    if (!!startLocation.lat && !!startLocation.lng && !!!this.map) {
-      // set the current users view var
-      // if saved markers set center to them else set view to current location or global if geo location not available
-      const currView = markers.length
-        ? [markers[0].lat, markers[0].lng]
-        : [startLocation.lat, startLocation.lng];
-      // create map
-      this.map = L.map('map', {
-        layers: [
-          L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution:
-              '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          })
-        ]
-      }).setView(currView, 15);
-      // add click event listener to map
-      this.map.on('click', this.handleMapClick);
-      // set zoom controller location
-      this.map.zoomControl.setPosition('topright');
-      // add new layer for markers/paths to map
-      this.layer = L.layerGroup().addTo(this.map);
-      // check the size is correct
-      this.map.invalidateSize();
-      // mock loading times
-      setTimeout(() => {
-        this.setState({ isLoading: false });
-      }, 2500);
-
-    } else if (!!this.map) {
+    // map must be initialed for these conditions
+    if (!!this.map) {
       // clear the marker/path layer if there are no markers or if the amount drops or order changes
       if (markers.length === 0 || markers.length <= waypointCount)
         this.layer.clearLayers();
@@ -113,11 +95,65 @@ class Map extends Component {
       if (markers.length !== waypointCount)
         this.setState({ waypointCount: markers.length });
 
-        // update distance if units change
-      if (this.map.getDistance && unitType !== currUnitType) this.updateDistance();
+      // update distance if units change
+      if (this.map.getDistance && unitType !== currUnitType)
+        this.updateDistance();
     }
   }
 
+  // distance calculation handler
+  getCurrDistance = () => this.map.getDistance(this.props.unitType).toFixed(2);
+
+  // update the current distance if waypoint added or moved
+  updateDistance = () => {
+    const currDist = this.getCurrDistance();
+    this.props.handleDistance(currDist);
+    this.setState({ currUnitType: this.props.unitType, currDist });
+  };
+
+  // handle location error
+  handleLocationError = (e) => {
+    alert(e.message);
+  };
+
+  // add markers and paths to map
+  handleMarkers = () => {
+    const { markers } = this.props;
+    const { currDist } = this.state;
+
+    // markers
+    markers.forEach((m) => {
+        // bind popup var to each marker
+        var popup = L.popup()
+          .setLatLng([m.lat, m.lng])
+          .setContent(`<span class='markerPopup'>${m.name}</span>`);
+
+        // initialize marker class
+        L.marker(m, {
+          icon: waypointMarker(m.id),
+          title: m.name,
+          alt: m.name,
+          draggable: true,
+          autoPan: true,
+          riseOnHover: true
+        })
+          .bindPopup(popup)
+          .openPopup()
+          .addEventListener('moveend', this.handleMarkerDrag)
+          .addTo(this.layer);
+      });
+
+    // initialize polyline class
+    this.map = L.polyline(
+      markers.map((m) => [m.lat, m.lng]),
+      { color: 'blue', weight: 10 }
+    ).addTo(this.layer);
+
+    // if the distance has changed update it
+    if (this.getCurrDistance() !== currDist) this.updateDistance();
+  };
+
+  // handle marker drag
   handleMarkerDrag = (e) => {
     const { _icon, _latlng } = e.target;
     const parsedData = {
@@ -125,34 +161,6 @@ class Map extends Component {
       ..._latlng
     };
     this.props.handleMarkerMove(parsedData);
-  };
-  // add markers and paths to map
-  handleMarkers = () => {
-    const { markers } = this.props;
-    // markers
-    markers.forEach((m) => {
-      var popup = L.popup()
-        .setLatLng([m.lat, m.lng])
-        .setContent(`<span class='markerPopup'>${m.name}</span>`);
-
-      L.marker(m, {
-        icon: waypointMarker(m.id),
-        title: m.name,
-        alt: m.name,
-        draggable: true,
-        autoPan: true,
-        riseOnHover: true,
-      }).bindPopup(popup).openPopup()
-      .addEventListener('moveend', this.handleMarkerDrag)
-      .addTo(this.layer)
-    })
-
-    this.map = L.polyline(
-      markers.map((m) => [m.lat, m.lng]),
-      { color: 'blue', weight: 10 }
-    ).addTo(this.layer);
-
-    if (this.getCurrDistance() !== this.state.currDist) this.updateDistance();
   };
 
   // handle when map is clicked

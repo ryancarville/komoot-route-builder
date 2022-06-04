@@ -49,9 +49,13 @@ const RouteList = (props) => {
   const handleSaveRoute = () => {
     setIsSaving(true)
     const ls = new useLocalStorage();
-    ls.setItem('route', JSON.stringify(markers))
-    ls.setItem('routeTitle', routeTitle);
-    ls.setItem('units', currentUnits);
+
+    const routeData = {
+      routeTitle,
+      unitType: currentUnits,
+      markers
+    }
+    ls.setItem('savedRoute', JSON.stringify(routeData))
     // mimic api calls
     setTimeout(() => {
       setIsSaving(false);
