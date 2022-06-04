@@ -11,10 +11,10 @@ class Map extends Component {
     super(props);
     this.map = undefined;
     this.state = {
-      startLocation: navigator.geolocation.getCurrentPosition((position) => ({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      })),
+      startLocation: {
+        lat: undefined,
+        lng: undefined
+      },
       waypointCount: undefined,
       isLoading: true,
       currUnitType: this.props.unitType
@@ -22,14 +22,22 @@ class Map extends Component {
   }
 
   getUserLocation = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      this.setState({
-        startLocation: {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
+    if(navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log(position.coords.latitude)
+        this.setState({
+          startLocation: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+        });
       });
-    });
+    } else {
+      this.setState({ startLocation: {
+        lat: 0,
+        lng: 0
+      }})
+    }
   };
 
   getCurrDistance = () => this.map.getDistance(this.props.unitType).toFixed(2);
@@ -41,36 +49,37 @@ class Map extends Component {
   };
 
   componentDidMount() {
-    if (!this.state.startLocation) this.getUserLocation();
-    // add distance calculation func to polyline class
-    L.Polyline = L.Polyline.include({
-      getDistance: function (system) {
-        // distance in meters
-        var mDistance = 0,
-          length = this._latlngs.length;
-        for (var i = 1; i < length; i++) {
-          mDistance += this._latlngs[i].distanceTo(this._latlngs[i - 1]);
-        }
-        // optional
-        if (system === unitTypes.miles) {
-          return mDistance / 1609.34;
-        } else {
-          return mDistance / 1000;
-        }
-      }
-    });
+    if (!!!this.state.startLocation.lat) this.getUserLocation();
   }
 
   componentDidUpdate() {
-    const { markers } = this.props;
-    const { startLocation, waypointCount } = this.state;
+    const { markers, unitType } = this.props;
+    const { startLocation, waypointCount, currUnitType } = this.state;
+
     // only create the map is not already initialized
-    if (!!!this.map) {
+    if (!!startLocation.lat && !!startLocation.lng && !!!this.map) {
+      // add distance calculation func to polyline class
+      L.Polyline = L.Polyline.include({
+        getDistance: function (system) {
+          // distance in meters
+          var mDistance = 0,
+            length = this._latlngs.length;
+          for (var i = 1; i < length; i++) {
+            mDistance += this._latlngs[i].distanceTo(this._latlngs[i - 1]);
+          }
+          // optional
+          if (system === unitTypes.miles) {
+            return mDistance / 1609.34;
+          } else {
+            return mDistance / 1000;
+          }
+        }
+      });
       // set the current users view var
       // if saved markers set center to them else set view to current location or global if geo location not available
       const currView = markers.length
         ? [markers[0].lat, markers[0].lng]
-        : !!startLocation ? [(startLocation.lat, startLocation.lng)] : [0,0];
+        : [startLocation.lat, startLocation.lng];
       // create map
       this.map = L.map('map', {
         layers: [
@@ -92,12 +101,7 @@ class Map extends Component {
       setTimeout(() => {
         this.setState({ isLoading: false });
       }, 2500);
-    }
-
-    if (!!this.map) {
-
-
-
+    } else if (!!this.map) {
       // clear the marker/path layer if there are no markers or if the amount drops or order changes
       if (markers.length === 0 || markers.length <= waypointCount)
         this.layer.clearLayers();
@@ -110,10 +114,8 @@ class Map extends Component {
         this.setState({ waypointCount: markers.length });
 
       // update distance if units change
-      if (this.props.unitType !== this.state.currUnitType)
-        this.updateDistance();
+      if (unitType !== currUnitType) this.updateDistance();
     }
-
   }
 
   handleMarkerDrag = (e) => {
