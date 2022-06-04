@@ -19,12 +19,28 @@ class Map extends Component {
       isLoading: true,
       currUnitType: this.props.unitType
     };
+    // add distance calculation func to polyline class
+    L.Polyline = L.Polyline.include({
+      getDistance: function (system) {
+        // distance in meters
+        var mDistance = 0,
+          length = this._latlngs.length;
+        for (var i = 1; i < length; i++) {
+          mDistance += this._latlngs[i].distanceTo(this._latlngs[i - 1]);
+        }
+        // optional
+        if (system === unitTypes.miles) {
+          return mDistance / 1609.34;
+        } else {
+          return mDistance / 1000;
+        }
+      }
+    });
   }
 
   getUserLocation = () => {
     if(navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position.coords.latitude)
         this.setState({
           startLocation: {
             lat: position.coords.latitude,
@@ -58,23 +74,6 @@ class Map extends Component {
 
     // only create the map is not already initialized
     if (!!startLocation.lat && !!startLocation.lng && !!!this.map) {
-      // add distance calculation func to polyline class
-      L.Polyline = L.Polyline.include({
-        getDistance: function (system) {
-          // distance in meters
-          var mDistance = 0,
-            length = this._latlngs.length;
-          for (var i = 1; i < length; i++) {
-            mDistance += this._latlngs[i].distanceTo(this._latlngs[i - 1]);
-          }
-          // optional
-          if (system === unitTypes.miles) {
-            return mDistance / 1609.34;
-          } else {
-            return mDistance / 1000;
-          }
-        }
-      });
       // set the current users view var
       // if saved markers set center to them else set view to current location or global if geo location not available
       const currView = markers.length
@@ -101,6 +100,7 @@ class Map extends Component {
       setTimeout(() => {
         this.setState({ isLoading: false });
       }, 2500);
+
     } else if (!!this.map) {
       // clear the marker/path layer if there are no markers or if the amount drops or order changes
       if (markers.length === 0 || markers.length <= waypointCount)
@@ -113,14 +113,13 @@ class Map extends Component {
       if (markers.length !== waypointCount)
         this.setState({ waypointCount: markers.length });
 
-      // update distance if units change
-      if (unitType !== currUnitType) this.updateDistance();
+        // update distance if units change
+      if (this.map.getDistance && unitType !== currUnitType) this.updateDistance();
     }
   }
 
   handleMarkerDrag = (e) => {
     const { _icon, _latlng } = e.target;
-    console.log(_icon);
     const parsedData = {
       name: _icon.title,
       ..._latlng
