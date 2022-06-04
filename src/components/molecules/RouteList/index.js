@@ -10,7 +10,6 @@ import Button from '../../atoms/Button'
 const RouteList = (props) => {
   const {
     routeTitle,
-    isSideBarOpen,
     markers,
     removeWaypoint,
     handleDrag,
@@ -21,12 +20,15 @@ const RouteList = (props) => {
     currentUnits
   } = props;
 
-  const [showSavedMsg, setShowSavedMsg] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const [showDeleteAllMsg, setShowDeleteAllMsg] = useState(false);
 
+  // check is mobile
+  // if mobile default close instructions
   useEffect(() => {
     window.innerWidth < 500 ? setShowInstructions(false) : setShowInstructions(true);
   },[])
@@ -45,29 +47,34 @@ const RouteList = (props) => {
 
   // save the current markers and unit type to local storage
   const handleSaveRoute = () => {
+    setIsSaving(true)
     const ls = new useLocalStorage();
     ls.setItem('route', JSON.stringify(markers))
     ls.setItem('routeTitle', routeTitle);
     ls.setItem('units', currentUnits);
-    setShowSavedMsg(true);
+    // mimic api calls
     setTimeout(() => {
-      setShowSavedMsg(false)
-    }, 2500);
+      setIsSaving(false);
+      setIsSaved(true);
+      setTimeout(() => {
+        setIsSaved(false)
+      }, 2500);
+    }, 1500);
   }
 
   // parser markers into gpx file and auto download
   const handleDownloadRoute = () => {
     setIsDownloading(true);
     const file = gpxGenerator(routeTitle, markers);
-    console.log(file)
     downloadBlob(new Blob([file]), `${routeTitle.replaceAll(' ', '-')}.gpx`);
+    // mimic api calls
     setTimeout(() => {
       setIsDownloading(false);
       setIsDownloaded(true);
     }, 1500);
     setTimeout(() => {
       setIsDownloaded(false);
-    }, 4500)
+    }, 4500);
   }
 
   const handleShowDeleteAllMsg = () => {
@@ -80,9 +87,7 @@ const RouteList = (props) => {
   }
 
   return (
-    <aside
-      className={isSideBarOpen ? 'routeListWrapper' : 'routeListWrapperClose'}
-    >
+    <aside className={'routeListWrapper'}>
       <div className='routeListHeader'>
         <h2>Route Builder</h2>
       </div>
@@ -184,25 +189,15 @@ const RouteList = (props) => {
           </div>
         </div>
       )}
-      {showSavedMsg && (
-        <div className={'routeSavedMsg'}>
-          <p>Route saved!</p>
-        </div>
-      )}
-      {isDownloaded && (
-        <div className={'routeSavedMsg'}>
-          <p>GPX downloaded!</p>
-        </div>
-      )}
       <div className='downloadWrapper'>
         <Button
           cls='saveRouteBtn'
-          text='Save Route'
+          text={isSaving ? 'Saving...' : isSaved ? 'Route Saved!' : 'Save Route'}
           onClick={handleSaveRoute}
         />
         <Button
           cls='gpxDownloadBtn'
-          text={isDownloading ? 'Downloading...' : 'Download Route'}
+          text={isDownloading ? 'Downloading...' : isDownloaded ? 'GPX downloaded!' : 'Download Route'}
           onClick={handleDownloadRoute}
         />
       </div>

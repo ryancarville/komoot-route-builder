@@ -5,6 +5,8 @@ import '../../../styles/routeBuilder.css'
 import ToolBar from '../ToolBar'
 import { unitTypes } from "../../../constants/common"
 import useLocalStorage from "../../../hooks/localStorage"
+import DrawerMenu from "../../molecules/DrawerMenu"
+import logo from '../../../images/logo.png';
 
 // component for route builder
 class RouteBuilder extends Component {
@@ -13,9 +15,8 @@ class RouteBuilder extends Component {
     this.state = {
       routeTitle: 'Komoot Route',
       markers: [],
-      currentDistance: 0.0,
+      currentDistance: 0.00,
       unitType: unitTypes.miles,
-      isSideBarOpen: true,
     };
     this.waypointPrefix = 'Waypoint';
   }
@@ -54,7 +55,7 @@ class RouteBuilder extends Component {
 
   // delete selected waypoint from list
   handleRemoveWaypoint = (id) => {
-    if (id === 'all') this.setState({markers: []});
+    if (id === 'all') this.setState({markers: [], currentDistance: 0.00});
     else {
       const currWaypoint = this.state.markers.filter((mark) => mark.id !== id);
       const updatedIds = currWaypoint.map((point) => {
@@ -151,42 +152,39 @@ class RouteBuilder extends Component {
     this.setState({ unitType: unit });
   };
 
-  handleSideBar = () => this.setState({isSideBarOpen: !this.state.isSideBarOpen})
-
-  
   render() {
+    const {
+      routeTitle,
+      unitType,
+      markers,
+      currentDistance
+    } = this.state;
     return (
       <section className={'routeBuilderWrapper'}>
-        <aside
-          className={
-            this.state.isSideBarOpen ? 'routeBuilderSideBar' : 'closedSideBar'
-          }
-        >
+        <DrawerMenu menuIcon={logo}>
           <ToolBar
             handleUnitType={this.handleUnitChange}
-            currUnitType={this.state.unitType}
+            currUnitType={unitType}
             handleSideBar={this.handleSideBar}
           />
           <RouteList
-            isSideBarOpen={this.state.isSideBarOpen}
-            routeTitle={this.state.routeTitle}
-            markers={this.state.markers}
+            routeTitle={routeTitle}
+            markers={markers}
             removeWaypoint={this.handleRemoveWaypoint}
             handleDrag={this.handleDrag}
             handleDrop={this.handleDrop}
             handleRouteTitleChange={this.handleRouteTitleChange}
             handleNameChange={this.handleNameChange}
-            currentDistance={`${this.state.currentDistance} ${this.state.unitType}`}
-            currentUnits={this.state.unitType}
+            currentDistance={`${currentDistance} ${unitType}`}
+            currentUnits={unitType}
           />
-        </aside>
+        </DrawerMenu>
         <Map
-          markers={this.state.markers}
-          isSideBarOpen={this.state.isSideBarOpen}
+          markers={markers}
           handleMapClick={this.handleAddWaypoint}
           handleMarkerMove={this.handleMarkerMove}
           handleDistance={this.handleDistance}
-          unitType={this.state.unitType}
+          unitType={unitType}
         />
       </section>
     );

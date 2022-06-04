@@ -1,62 +1,23 @@
 .toolBarWrapper {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   width: 100%;
+  height: 4em;
   background-color: white;
-  animation-name: toolBarOpen;
-  animation-duration: .5s;
-  animation-timing-function: ease-in-out;
+  position: sticky;
+  top: 0;
+  left: 0;
 }
 
-.toolBarClose {
-  width: 80px;
-  height: 80px;
-  background-color: white;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-}
-
-.toolBarLogo {
-  cursor: pointer;
-  width: 70px;
-  height: 70px;
-  /* padding: 10px; */
-  object-fit: contain;
-  background-color: white;
-}
-
-.logoTooltip {
-  position: relative;
-  border-bottom: 1px dotted black;
-}
-
-.logoTooltipTxt {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: white;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  top: 20px;
-  left: 5em;
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 100;
-}
-.toolBarLogo:hover > .logoTooltipTxt {
-  visibility: visible;
-}
-
-.untBtnWrapper {
+.unitBar {
   display: inline-flex;
 }
+
 .unitBtn {
   width: 70px;
   font-size: 20px;
-  margin: 10px 10px 0 10px;
+  margin: 10px;
   background-color: transparent;
   border-radius: 0;
 }
@@ -64,18 +25,7 @@
 .selectedUnitBtn {
   border-bottom: 3px solid blue;
 }
+
 .unitBtn:hover {
   border-bottom: 3px solid aquamarine;
-}
-
-@keyframes toolBarOpen {
-  from {
-    width: 0%;
-    opacity: 0;
-  }
-
-  to {
-    width: 100%;
-    opacity: 1;
-  }
 }

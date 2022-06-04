@@ -6,11 +6,6 @@
   align-items: center;
   background-color: rgb(26, 52, 52);
   justify-content: center;
-  animation-name: routeListOpen;
-  animation-duration: .3s;
-}
-.routeListWrapperClose {
-  display: none;
 }
 
 .routeListHeader {
@@ -36,8 +31,8 @@
 
 .routeBuilderInstructions {
   color: white;
-  margin: 0 30px;
-  width: auto;
+  margin: 0 1em;
+  width: 90%;
   height: 45em;
   font-weight: 500;
   letter-spacing: 0.8px;
@@ -47,12 +42,13 @@
 
 .closedRouteBuilderInstructions {
   color: white;
-  margin: 0 30px;
+  margin: 0 1em;
   font-weight: 500;
   letter-spacing: 0.8px;
   font-size: 16px;
   height: 1em;
-  min-height: 85px;
+  width: 90%;
+  min-height: 4em;
   overflow: hidden;
   border-bottom: 2px solid slategray;
 }
@@ -60,6 +56,7 @@
 .instructionsList {
   padding-left: 10px;
 }
+
 .instructionsList > li {
   list-style-image: url('../images/check.png');
   list-style-type: none;
@@ -73,14 +70,37 @@
   margin-top: 100px
 }
 
+.routeTitleInput {
+  margin: 15px;
+  background-color: transparent;
+  color: white;
+  border: none;
+  font-size: 25px;
+  width: auto;
+  text-align: center;
+}
+
+.routeTotalsWrapper {
+  color: white;
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  font-weight: 400;
+}
+
 .routeList {
-  height: 18em;
   text-align: center;
   margin: 2em 0 2em 0;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
   overflow-y: scroll;
+  width: 100%;
+  height: 10em;
+}
+
+.routeTotalsWrapper p {
+  margin: 0px;
 }
 .waypointContent {
   height: auto;
@@ -96,28 +116,18 @@
   justify-content: space-around;
   align-items: center;
   padding: 0px 30px 0px 30px;
-  cursor: pointer;
   margin: 5px 0 5px 0;
 }
+
 .waypointItem:hover {
   background-color: rgba(0, 255, 47, 0.3);
 }
 
-.routeTitleInput {
-  margin: 15px;
-  background-color: transparent;
-  color: white;
-  border: none;
-  font-size: 25px;
-  width: auto;
-  text-align: center;
-}
 .waypointNameInput {
   margin-left: 10px;
   background-color: transparent;
   color: white;
   border: none;
-  cursor: pointer;
   font-size: 25px;
   width: 200px;
 }
@@ -125,14 +135,6 @@
 .waypointItem svg {
   color: lightslategrey;
   cursor: pointer;
-}
-
-.routeTotalsWrapper {
-  color: white;
-  display: flex;
-  justify-content: space-evenly;
-  width: 100%;
-  font-weight: 400;
 }
 
 .downloadWrapper {
@@ -160,6 +162,7 @@
   font-size: 25px;
   font-weight: 400;
 }
+
 .gpxDownloadBtn {
   background-color: lime;
   color: white;
@@ -184,13 +187,14 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 10000;
+  z-index: 999999999;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
 }
+
 .deleteAllMsg {
   width: 25em;
   height: auto;
@@ -207,21 +211,30 @@
 
 .deleteAllBtnConfirm {
   background-color: lime;
-  width: 50%;
+  margin-bottom: .5em
+}
+
+.deleteAllBtnConfirm:hover {
+  background-color: blue;
+  color: white;
 }
 
 .deleteAllBtnCancel {
   background-color: transparent;
-  width: 50%;
+}
+
+.deleteAllBtnCancel:hover {
+  background-color: lightblue;
 }
 @media screen and (min-width: 500px) {
   .routeListWrapper {
-    height: 100vh;
-    overflow: hidden;
     justify-content: flex-start;
+    height: 100%;
   }
+
   .routeList {
-    height: 100vh
+    height: 100%;
+    max-height: 29em;
   }
   .downloadWrapper{
     flex-direction: row;
@@ -240,16 +253,4 @@
     width: 100%;
   }
 
-}
-
-@keyframes routeListOpen {
-  from {
-    width: 0px;
-    opacity: 0;
-  }
-
-  to {
-    width: 40em;
-    opacity: 1;
-  }
 }

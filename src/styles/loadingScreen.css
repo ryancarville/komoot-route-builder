@@ -1,0 +1,62 @@
+.loadingScreenWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.loadingScreenContent {
+  animation: loadingScreenOpen 1.5s;
+  width: 20em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingScreenCloseAnimation {
+  animation: loadingScreenClose .5s ease-out;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+.loadingScreenClose {
+  display: none;
+}
+
+.runnerImg {
+  width: 10em;
+}
+
+@keyframes loadingScreenOpen {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes loadingScreenClose {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}

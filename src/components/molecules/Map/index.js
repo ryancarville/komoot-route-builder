@@ -4,6 +4,7 @@ import 'leaflet.animatedmarker/src/AnimatedMarker';
 import '../../../styles/map.css'
 import { unitTypes } from '../../../constants/common';
 import waypointMarker from '../../atoms/WaypointMarker'
+import LoadingScreen from '../../atoms/LoadingScreen'
 
 class Map extends Component {
   constructor(props) {
@@ -61,36 +62,41 @@ class Map extends Component {
   }
 
   componentDidUpdate() {
-    const { markers, isSideBarOpen } = this.props;
+    const { markers } = this.props;
     const { startLocation, waypointCount } = this.state;
-
-
-    if (startLocation && !!!this.map) {
+    // only create the map is not already initialized
+    if (!!!this.map) {
+      // set the current users view var
+      // if saved markers set center to them else set view to current location or global if geo location not available
+      const currView = markers.length
+        ? [markers[0].lat, markers[0].lng]
+        : !!startLocation ? [(startLocation.lat, startLocation.lng)] : [0,0];
       // create map
       this.map = L.map('map', {
-        center: [startLocation.lat, startLocation.lng],
-        zoom: 16,
         layers: [
           L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution:
               '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           })
         ]
-      });
+      }).setView(currView, 15);
       // add click event listener to map
       this.map.on('click', this.handleMapClick);
+      // set zoom controller location
+      this.map.zoomControl.setPosition('topright');
       // add new layer for markers/paths to map
       this.layer = L.layerGroup().addTo(this.map);
       // check the size is correct
       this.map.invalidateSize();
-
-      this.setState({ isLoading: false });
+      // mock loading times
+      setTimeout(() => {
+        this.setState({ isLoading: false });
+      }, 2500);
     }
 
-    if (this.map) {
+    if (!!this.map) {
 
-      // resize map if sidebar closes
-      if (!isSideBarOpen) this.map._map.invalidateSize();
+
 
       // clear the marker/path layer if there are no markers or if the amount drops or order changes
       if (markers.length === 0 || markers.length <= waypointCount)
@@ -107,6 +113,7 @@ class Map extends Component {
       if (this.props.unitType !== this.state.currUnitType)
         this.updateDistance();
     }
+
   }
 
   handleMarkerDrag = (e) => {
@@ -152,9 +159,12 @@ class Map extends Component {
 
   render() {
     return (
-      <div className={'mapWrapper'}>
-        <div id='map'></div>
-      </div>
+      <>
+        <LoadingScreen isLoading={this.state.isLoading} />
+        <div className={'mapWrapper'}>
+          <div id='map'></div>
+        </div>
+      </>
     );
   }
 };

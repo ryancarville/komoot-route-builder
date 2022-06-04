@@ -1,0 +1,113 @@
+.drawerMenuWrapperOpen {
+  z-index: 9991;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  animation: drawerOpen .5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.drawerMenuWrapperClosed {
+  z-index: 9991;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  animation: drawerClosed .5s ease-in-out;
+  left: -40em;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.drawerMenuIconWrapper {
+  width: 60px;
+  height: 4em;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.drawerMenuIcon {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  position: absolute;
+}
+
+.drawerMenuToolTip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 9999;
+  background-color: transparent;
+  width: 10em;
+  height: 3em;
+}
+
+.drawerMenuToolTipTxt {
+  visibility: hidden;
+  width: 7em;
+  font-size: .9em;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  top: .2em;
+  left: 3.5em;
+  z-index: 9999;
+  position: absolute;
+}
+
+.drawerMenuIconWrapper:hover .drawerMenuToolTipTxt {
+  visibility: visible;
+}
+
+@media screen and (min-width: 500px) {
+  .drawerMenuWrapperOpen {
+    width: 35em;
+    height: 100vh;
+    left: 0em;
+  }
+
+  .drawerMenuWrapperClosed {
+    width: 35em;
+    height: 100vh;
+    left: -40em;
+  }
+}
+
+@keyframes drawerOpen {
+  from {
+    left: -40em;
+  }
+
+  to {
+    left: 0em;
+  }
+}
+
+@keyframes drawerClosed {
+  from {
+    left: 0em;
+  }
+
+  to {
+    left: -40em;
+  }
+}
