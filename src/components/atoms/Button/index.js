@@ -7,7 +7,7 @@ const Button = (props) => {
   const { text, cls, onClick } = props;
 
   return (
-    <button className={clsx(['btnBase', cls && cls])} onClick={onClick}>
+    <button className={clsx(['btnBase', cls && cls])} onClick={onClick} value={text}>
       {text}
     </button>
   );

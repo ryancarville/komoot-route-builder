@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import '../../../styles/drawerMenu.css'
 import { MdMenu } from 'react-icons/md';
+
 // sliding drawer component
 const DrawerMenu = (props)=> {
   const {menuIcon, children} = props;
@@ -9,7 +10,7 @@ const DrawerMenu = (props)=> {
   const handleDrawerMenuAction = () => setIsDrawerOpen(!isDrawerOpen);
 
   return (
-    <>
+    <aside>
       <span className={'drawerMenuToolTip'}>
         <div className={'drawerMenuIconWrapper'}>
           <img
@@ -24,7 +25,7 @@ const DrawerMenu = (props)=> {
       <div className={isDrawerOpen ? 'drawerMenuWrapperOpen' : 'drawerMenuWrapperClosed'}>
         {children}
       </div>
-    </>
+    </aside>
   );
 }
 

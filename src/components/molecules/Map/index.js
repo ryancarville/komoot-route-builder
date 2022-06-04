@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
-import 'leaflet.animatedmarker/src/AnimatedMarker';
 import '../../../styles/map.css'
 import { unitTypes } from '../../../constants/common';
 import waypointMarker from '../../atoms/WaypointMarker'
 import LoadingScreen from '../../atoms/LoadingScreen'
 
+// map class component
 class Map extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +24,7 @@ class Map extends Component {
         for (var i = 1; i < length; i++) {
           mDistance += this._latlngs[i].distanceTo(this._latlngs[i - 1]);
         }
-        // optional
+        // calculated miles or km
         if (system === unitTypes.miles) {
           return mDistance / 1609.34;
         } else {
@@ -40,6 +40,7 @@ class Map extends Component {
     if (!!!this.map) {
       // create map
       this.map = L.map('map', {
+        zoom: 15,
         layers: [
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 20,
@@ -69,8 +70,9 @@ class Map extends Component {
         this.map.setView(currView, 15);
       } else {
         // set location to uses location
-        this.map.locate({ setView: true, maxZoom: 15 });
+        this.map.locate({ setView: true, zoom: 15 });
       }
+
       // mock data fetch
       setTimeout(() => {
         this.setState({ isLoading: false });

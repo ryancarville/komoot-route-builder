@@ -2,7 +2,7 @@ import React from "react";
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
 
-// SEO FC for all dynamic metadata
+// SEO functional component for all dynamic metadata
 const Seo = (props) => {
   const {
     url,

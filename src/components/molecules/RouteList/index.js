@@ -7,6 +7,7 @@ import { downloadBlob } from '../../../utils/common'
 import { gpxGenerator } from '../../../utils/gpxGenerator'
 import Button from '../../atoms/Button'
 
+// route list functional component
 const RouteList = (props) => {
   const {
     routeTitle,

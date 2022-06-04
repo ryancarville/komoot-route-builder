@@ -45,8 +45,8 @@
   margin: 0 1em;
   font-weight: 500;
   letter-spacing: 0.8px;
-  font-size: 16px;
-  height: 1em;
+  font-size: 1em;
+  height: 5em;
   width: 90%;
   min-height: 4em;
   overflow: hidden;
@@ -90,14 +90,13 @@
 
 .routeList {
   text-align: center;
-  margin: 2em 0 2em 0;
+  margin: 1em 0 1em 0;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
   overflow-y: scroll;
   width: 100%;
   height: 10em;
-
 }
 
 .routeTotalsWrapper p {
@@ -109,6 +108,8 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
+  touch-action: none;
+  user-select: none;
 }
 
 .waypointItem {
@@ -247,8 +248,9 @@
     height: auto;
   }
   .closedRouteBuilderInstructions {
-    min-height: 70px;
+    height: 4em;
   }
+  
   .waypointItem {
     width: 100%;
     justify-content: space-between;

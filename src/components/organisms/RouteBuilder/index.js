@@ -1,23 +1,24 @@
 import React, { Component } from "react";
-import RouteList from "../../molecules/RouteList"
-import Map from '../../molecules/Map'
-import '../../../styles/routeBuilder.css'
-import ToolBar from '../ToolBar'
-import { unitTypes } from "../../../constants/common"
-import useLocalStorage from "../../../hooks/localStorage"
-import DrawerMenu from "../../molecules/DrawerMenu"
-import logo from '../../../images/logo.png';
+import RouteList from "../../molecules/RouteList";
+import Map from "../../molecules/Map";
+import "../../../styles/routeBuilder.css";
+import ToolBar from "../ToolBar";
+import { unitTypes } from "../../../constants/common";
+import useLocalStorage from "../../../hooks/localStorage";
+import DrawerMenu from "../../molecules/DrawerMenu";
+import logo from "../../../images/logo.png";
+import { sortUtil, dragDropOrdering } from "../../../utils/common";
 
-// component for route builder
+// class component for route builder
 class RouteBuilder extends Component {
 
   constructor(props) {
     const ls = new useLocalStorage();
-    const savedRoute = ls.getItem('savedRoute');
+    const savedRoute = ls.getItem("savedRoute");
     let initialState = {
-      routeTitle: 'Komoot Route',
+      routeTitle: "Komoot Route",
       markers: [],
-      currentDistance: '0.00',
+      currentDistance: "0.00",
       unitType: unitTypes.miles
     };
     if (!!savedRoute) {
@@ -25,27 +26,8 @@ class RouteBuilder extends Component {
     }
     super(props);
     this.state = {...initialState};
-    this.waypointPrefix = 'Waypoint';
+    this.waypointPrefix = "Waypoint";
   }
-
-  // check if there is a saved route
-  // componentDidMount() {
-  //   const ls = new useLocalStorage();
-  //   const savedRoute = ls.getItem('savedRoute');
-  //   if (!!savedRoute) {
-  //     const prevRoute = JSON.parse(savedRoute);
-  //     this.setState({
-  //       routeTitle: prevRoute.routeTitle,
-  //       markers: prevRoute.markers,
-  //       unitType: prevRoute.unitType
-  //     });
-  //   }
-  // }
-
-  // handle sorting array
-  handleSort = (array) => {
-    return array.sort((a, b) => a.id - b.id);
-  };
 
   // add new waypoint to list
   handleAddWaypoint = (newMarker) => {
@@ -56,13 +38,13 @@ class RouteBuilder extends Component {
       id
     };
     this.setState({
-      markers: this.handleSort([...this.state.markers, mark])
+      markers: sortUtil([...this.state.markers, mark], "-")
     });
   };
 
   // delete selected waypoint from list
   handleRemoveWaypoint = (id) => {
-    if (id === 'all') this.setState({ markers: [], currentDistance: 0.0 });
+    if (id === "all") this.setState({ markers: [], currentDistance: 0.0 });
     else {
       const currWaypoint = this.state.markers.filter((mark) => mark.id !== id);
       const updatedIds = currWaypoint.map((point) => {
@@ -75,7 +57,7 @@ class RouteBuilder extends Component {
         return point;
       });
       this.setState({
-        markers: this.handleSort(updatedIds)
+        markers: sortUtil(updatedIds, "-")
       });
     }
   };
@@ -92,7 +74,7 @@ class RouteBuilder extends Component {
 
     const prevMarkers = markers.filter((m) => m.id !== oldMarker.id);
     const updatedMarkers = [...prevMarkers, newMarker];
-    this.setState({ markers: this.handleSort(updatedMarkers) });
+    this.setState({ markers: sortUtil(updatedMarkers, "-") });
   };
 
   // set current drag id to state
@@ -105,40 +87,11 @@ class RouteBuilder extends Component {
   // adjust markers state on drop
   handleDrop = (ev) => {
     const { markers, dragId } = this.state;
-    const dragBox = markers.find((m) => m.id === dragId);
-    const dropBox = markers.find((m) => m.id === +ev.target.id);
 
-    const dragBoxOrder = dragBox.id;
-    const dropBoxOrder = dropBox.id;
-
-    const newMarkersState = markers.map((mark) => {
-      // if mark if higher than moved mark and higher than destination mark
-      if (mark.id > dragBoxOrder && dropBoxOrder < mark.id) {
-        return mark;
-      }
-      // if mark if higher than moved mark and lower than destination mark
-      else if (mark.id > dragBoxOrder && dropBoxOrder > mark.id) {
-        mark.id--;
-      } // if mark if lower than moved mark and higher or equal to destination mark
-      else if (mark.id < dragBoxOrder && dropBoxOrder <= mark.id) {
-        mark.id++;
-      } // if mark is moved mark
-      else if (mark.id === dragBoxOrder) {
-        mark.id = dropBoxOrder;
-      } // if mark is destination mark
-      else if (mark.id === dropBoxOrder) {
-        mark.id--;
-      }
-
-      if (mark.name.includes(this.waypointPrefix)) {
-        mark.name = `${this.waypointPrefix} ${mark.id}`;
-      }
-
-      return mark;
-    });
+    const newMarkersState = dragDropOrdering(markers, dragId, ev.target.id);
 
     this.setState({
-      markers: this.handleSort(newMarkersState)
+      markers: sortUtil(newMarkersState, "-")
     });
   };
 
@@ -154,7 +107,7 @@ class RouteBuilder extends Component {
     currMarker.name = markerToChange.name;
     const prevState = markers.filter((m) => m.id !== markerToChange.id);
     this.setState({
-      markers: this.handleSort([...prevState, currMarker])
+      markers: sortUtil([...prevState, currMarker], "-")
     });
   };
 
@@ -167,7 +120,7 @@ class RouteBuilder extends Component {
   render() {
     const { routeTitle, unitType, markers, currentDistance } = this.state;
     return (
-      <section className={'routeBuilderWrapper'}>
+      <section className={"routeBuilderWrapper"}>
         <DrawerMenu menuIcon={logo}>
           <ToolBar
             handleUnitType={this.handleUnitChange}

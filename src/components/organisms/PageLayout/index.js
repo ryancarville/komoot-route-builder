@@ -12,7 +12,7 @@ const PageLayout = (props) => {
   } = props;
 
 return (
-    <>
+    <div>
       <Seo
         title={pageTitle}
         description={description}
@@ -21,7 +21,7 @@ return (
         lang={lang}
       />
       {children}
-    </>
+    </div>
   );
 }
 export default PageLayout;

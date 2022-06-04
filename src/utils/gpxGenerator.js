@@ -25,7 +25,7 @@ export const gpxGenerator = (title, data) => {
         name="${title}"
         time=${creationTime}
       >
-        ${wpts.join('')}
+        ${wpts.join("")}
       </metadata>
     </gpx>
   `;
