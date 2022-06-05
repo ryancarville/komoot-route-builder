@@ -11,21 +11,20 @@ export const gpxGenerator = (title, data) => {
   });
 
   const gpx = `
-    <?xml version="1.0" encoding="UTF-8"?>
     <gpx
       version="1.1"
       creator="Komoot - http://www.komoot.com"
-
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns="http://www.topografix.com/GPX/1/1"
-      xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"
-      xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+      xmlns#"http://www.topografix.com/GPX/1/1"
+      xmlns:gpxx#"http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+      xmlns:gpxtpx#"http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+      xmlns:xsi#"http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation#"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd">
     >
       <metadata
         name="${title}"
         time=${creationTime}
       >
-        ${wpts.join("")}
+        ${wpts.join('')}
       </metadata>
     </gpx>
   `;

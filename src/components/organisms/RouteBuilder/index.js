@@ -4,17 +4,15 @@ import Map from "../../molecules/Map";
 import "../../../styles/routeBuilder.css";
 import ToolBar from "../ToolBar";
 import { unitTypes } from "../../../constants/common";
-import useLocalStorage from "../../../hooks/localStorage";
 import DrawerMenu from "../../molecules/DrawerMenu";
 import logo from "../../../images/logo.png";
 import { sortUtil, dragDropOrdering } from "../../../utils/common";
 
 // class component for route builder
 class RouteBuilder extends Component {
-
   constructor(props) {
-    const ls = new useLocalStorage();
-    const savedRoute = ls.getItem("savedRoute");
+    // get saved route from local storage
+    const savedRoute = localStorage.getItem("savedRoute");
     let initialState = {
       routeTitle: "Komoot Route",
       markers: [],
@@ -88,10 +86,10 @@ class RouteBuilder extends Component {
   handleDrop = (ev) => {
     const { markers, dragId } = this.state;
 
-    const newMarkersState = dragDropOrdering(markers, dragId, ev.target.id);
+    const newMarkersState = dragDropOrdering(markers, dragId, +ev.target.id, this.waypointPrefix);
 
     this.setState({
-      markers: sortUtil(newMarkersState, "-")
+      markers: sortUtil(newMarkersState, '-')
     });
   };
 

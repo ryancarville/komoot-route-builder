@@ -1,31 +1,22 @@
-.drawerMenuWrapperOpen {
+.drawerMenuWrapper {
   z-index: 9991;
   top: 0;
-  left: 0;
   width: 100%;
   height: 100vh;
   position: absolute;
-  animation: drawerOpen .5s ease-in-out;
   display: flex;
   flex-direction: column;
   overflow: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-
+.drawerMenuWrapperOpen {
+  left: 0;
+  animation: drawerOpen .5s ease-in-out;
+}
 .drawerMenuWrapperClosed {
-  z-index: 9991;
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  position: absolute;
-  animation: drawerClosed .5s ease-in-out;
   left: -40em;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  animation: drawerClosed .5s ease-in-out;
 }
 
 .drawerMenuIconWrapper {

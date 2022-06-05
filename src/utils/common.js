@@ -1,3 +1,4 @@
+// general array sort func
 export const sortUtil = (array, dir) => {
   switch (dir) {
     case "-":
@@ -8,6 +9,7 @@ export const sortUtil = (array, dir) => {
       return array.sort((a, b) => a.id - b.id);
   }
 };
+
 // download file func
 export function downloadBlob(blob, fileName) {
   const url = window.URL.createObjectURL(blob);
@@ -24,10 +26,9 @@ export function downloadBlob(blob, fileName) {
 }
 
 // drag reordering
-export const dragDropOrdering = (array, dragId, dropId) => {
+export const dragDropOrdering = (array, dragId, dropId, defaultName) => {
   const dragBox = array.find((m) => m.id === dragId);
   const dropBox = array.find((m) => m.id === dropId);
-
   const dragBoxOrder = dragBox.id;
   const dropBoxOrder = dropBox.id;
 
@@ -52,8 +53,10 @@ export const dragDropOrdering = (array, dragId, dropId) => {
       }
 
       // update name if it is not a custom name
-      if (mark.name.includes(this.waypointPrefix)) {
-        mark.name = `${this.waypointPrefix} ${mark.id}`;
+      // based on the current default naming convention
+      const splitName = mark.name.split(' ');
+      if (splitName[0].includes(defaultName) && splitName.length === 2) {
+        mark.name = `${defaultName} ${mark.id}`;
       }
 
       return mark;

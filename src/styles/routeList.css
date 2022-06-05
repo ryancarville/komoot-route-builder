@@ -1,11 +1,21 @@
 .routeListWrapper {
   display: flex;
   width: 100%;
-  height: auto;
+  height: 100vh;
   flex-direction: column;
   align-items: center;
   background-color: rgb(26, 52, 52);
-  justify-content: center;
+  justify-content: space-between;
+}
+
+.routeListMainContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 40em;
+  overflow: auto;
 }
 
 .routeListHeader {
@@ -20,37 +30,39 @@
 .instructionsHeader {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .instructionsHeader span {
   font-size: 40px;
   cursor: pointer;
-  margin-top: 5px
+  margin-top: 5px;
 }
 
 .routeBuilderInstructions {
   color: white;
   margin: 0 1em;
   width: 90%;
-  height: 45em;
   font-weight: 500;
   letter-spacing: 0.8px;
   font-size: 16px;
   border-bottom: 2px solid slategray;
+  font-size: 1em;
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.routeBuilderInstructionsOpen {
+  height: 400em;
 }
 
-.closedRouteBuilderInstructions {
-  color: white;
-  margin: 0 1em;
-  font-weight: 500;
-  letter-spacing: 0.8px;
-  font-size: 1em;
+.routeBuilderInstructionsClosed {
   height: 5em;
-  width: 90%;
-  min-height: 4em;
-  overflow: hidden;
-  border-bottom: 2px solid slategray;
+  min-height: 5em;
+}
+
+.routeBuilderInstructions > p {
+  margin: 0 0 0.5em 0;
 }
 
 .instructionsList {
@@ -71,7 +83,7 @@
 }
 
 .routeTitleInput {
-  margin: 15px;
+  margin: 10px;
   background-color: transparent;
   color: white;
   border: none;
@@ -80,12 +92,31 @@
   text-align: center;
 }
 
+.routeDataWrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 0 1em 0 1em;
+}
+
 .routeTotalsWrapper {
   color: white;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  flex-direction: column;
   width: 100%;
   font-weight: 400;
+}
+
+.routeTotalsWrapper > p {
+  margin: 0;
+}
+
+.routeDeleteAllBtn {
+  width: '100%';
+  text-align: 'right';
+  margin-right: '3em';
 }
 
 .routeList {
@@ -96,32 +127,25 @@
   flex-direction: column;
   overflow-y: scroll;
   width: 100%;
-  height: 10em;
-}
-
-.routeTotalsWrapper p {
-  margin: 0px;
+  height: auto;
+  max-height: 25em;
 }
 
 .waypointContent {
-  height: auto;
+  height: 1.6em;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  touch-action: none;
-  user-select: none;
 }
 
 .waypointItem {
-  width: 100vw;
+  width: 100%;
   display: inline-flex;
   font-size: 25px;
   justify-content: space-around;
   align-items: center;
   padding: 0px 30px 0px 30px;
-  margin: 5px 0 5px 0;
-  touch-action: none;
-  user-select: none;
+  margin: 0;
 }
 
 .waypointItem:hover {
@@ -133,7 +157,7 @@
   background-color: transparent;
   color: white;
   border: none;
-  font-size: 25px;
+  font-size: 20px;
   width: 200px;
 }
 
@@ -147,32 +171,17 @@
   width: 95%;
   height: auto;
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
   align-items: center;
-}
-
-.routeSavedMsg {
-  color: white;
-  width: 275px;
-  height: 50px;
-  z-index: 100;
-  position: absolute;
-  background-color: orange;
-  bottom: 130px;
-  border-radius: 3em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 25px;
-  font-weight: 400;
 }
 
 .gpxDownloadBtn {
   background-color: lime;
   color: white;
   margin: 5px;
+  font-size: 1.1em !important;
 }
+
 .gpxDownloadBtn:hover {
   background-color: lightgreen;
 }
@@ -181,6 +190,7 @@
   background-color: lightskyblue;
   color: white;
   margin: 5px;
+  font-size: 1.1em !important;
 }
 
 .saveRouteBtn:hover {
@@ -201,11 +211,11 @@
 }
 
 .deleteAllMsg {
-  width: 25em;
+  width: 90%;
   height: auto;
   background-color: white;
   text-align: center;
-  padding: 2em;
+  padding: 1em;
 }
 
 .deleteAllMsg p {
@@ -215,13 +225,13 @@
 }
 
 .deleteAllBtnConfirm {
-  background-color: lime;
-  margin-bottom: .5em
+  background-color: blue;
+  margin-bottom: .5em;
+  color: white
 }
 
 .deleteAllBtnConfirm:hover {
-  background-color: blue;
-  color: white;
+  background-color: lime;
 }
 
 .deleteAllBtnCancel {
@@ -229,28 +239,36 @@
 }
 
 .deleteAllBtnCancel:hover {
-  background-color: lightblue;
+  color: lime;
 }
 @media screen and (min-width: 500px) {
   .routeListWrapper {
-    justify-content: flex-start;
+    justify-content: space-between;
     height: 100%;
   }
 
-  .routeList {
-    height: 100%;
-    max-height: 29em;
+  .routeListMainContent {
+    height: 50em;
   }
-  .downloadWrapper{
-    flex-direction: row;
+
+  .routeBuilderInstructionsOpen {
+    height: 30em;
+    max-height: 30em;
   }
-  .routeBuilderInstructions {
-    height: auto;
-  }
-  .closedRouteBuilderInstructions {
+
+  .routeBuilderInstructionsClosed {
     height: 4em;
+    min-height: 4em;
   }
-  
+
+  .routeList {
+    max-height: 100em;
+  }
+
+  .routeDataWrapper {
+    padding: 0 2em 0 2em;
+  }
+
   .waypointItem {
     width: 100%;
     justify-content: space-between;

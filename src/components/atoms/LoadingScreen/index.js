@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../../../styles/loadingScreen.css';
 import runner from '../../../images/run.gif';
-
+import PropTypes from 'prop-types'
 // mock loading screen
 const LoadingScreen = (props) => {
   const { isLoading } = props;
@@ -25,6 +25,14 @@ const LoadingScreen = (props) => {
       </div>
     </div>
   );
+}
+
+LoadingScreen.defaultProps = {
+  isLoading: false
+}
+
+LoadingScreen.propTypes = {
+  isLoading: PropTypes.bool
 }
 
 export default LoadingScreen;

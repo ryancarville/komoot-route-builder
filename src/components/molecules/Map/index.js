@@ -4,6 +4,7 @@ import '../../../styles/map.css'
 import { unitTypes } from '../../../constants/common';
 import waypointMarker from '../../atoms/WaypointMarker'
 import LoadingScreen from '../../atoms/LoadingScreen'
+import PropTypes from 'prop-types';
 
 // map class component
 class Map extends Component {
@@ -178,6 +179,20 @@ class Map extends Component {
       </>
     );
   }
+};
+
+Map.defaultProps = {
+  markers: [],
+  unitType: unitTypes.miles,
+  handleMarkerMove: () => {},
+  handleMapClick: () => {}
+}
+
+Map.propTypes = {
+  markers: PropTypes.array.isRequired,
+  unitType: PropTypes.string,
+  handleMarkerMove: PropTypes.func.isRequired,
+  handleMapClick: PropTypes.func.isRequired
 };
 
 export default Map;
