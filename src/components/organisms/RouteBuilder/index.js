@@ -1,30 +1,32 @@
-import React, { Component } from "react";
-import RouteList from "../../molecules/RouteList";
-import Map from "../../molecules/Map";
 import "../../../styles/routeBuilder.css";
-import ToolBar from "../ToolBar";
-import { unitTypes } from "../../../constants/common";
+
+import React, { Component } from "react";
+import { dragDropOrdering, sortUtil } from "../../../utils/common";
+
 import DrawerMenu from "../../molecules/DrawerMenu";
+import Map from "../../molecules/Map";
+import RouteList from "../../molecules/RouteList";
+import ToolBar from "../ToolBar";
 import logo from "../../../images/logo.png";
-import { sortUtil, dragDropOrdering } from "../../../utils/common";
+import { unitTypes } from "../../../constants/common";
 
 // class component for route builder
 class RouteBuilder extends Component {
   constructor(props) {
     // get saved route from local storage
-    const savedRoute = localStorage.getItem("savedRoute");
+    const savedRoute = localStorage.getItem('savedRoute');
     let initialState = {
-      routeTitle: "Komoot Route",
+      routeTitle: 'Komoot Route',
       markers: [],
-      currentDistance: "0.00",
+      currentDistance: '0.00',
       unitType: unitTypes.miles
     };
     if (!!savedRoute) {
       initialState = JSON.parse(savedRoute);
     }
     super(props);
-    this.state = {...initialState};
-    this.waypointPrefix = "Waypoint";
+    this.state = { ...initialState };
+    this.waypointPrefix = 'Waypoint';
   }
 
   // add new waypoint to list
@@ -36,13 +38,13 @@ class RouteBuilder extends Component {
       id
     };
     this.setState({
-      markers: sortUtil([...this.state.markers, mark], "-")
+      markers: sortUtil([...this.state.markers, mark], '-')
     });
   };
 
   // delete selected waypoint from list
   handleRemoveWaypoint = (id) => {
-    if (id === "all") this.setState({ markers: [], currentDistance: 0.0 });
+    if (id === 'all') this.setState({ markers: [], currentDistance: 0.0 });
     else {
       const currWaypoint = this.state.markers.filter((mark) => mark.id !== id);
       const updatedIds = currWaypoint.map((point) => {
@@ -55,7 +57,7 @@ class RouteBuilder extends Component {
         return point;
       });
       this.setState({
-        markers: sortUtil(updatedIds, "-")
+        markers: sortUtil(updatedIds, '-')
       });
     }
   };
@@ -72,7 +74,7 @@ class RouteBuilder extends Component {
 
     const prevMarkers = markers.filter((m) => m.id !== oldMarker.id);
     const updatedMarkers = [...prevMarkers, newMarker];
-    this.setState({ markers: sortUtil(updatedMarkers, "-") });
+    this.setState({ markers: sortUtil(updatedMarkers, '-') });
   };
 
   // set current drag id to state
@@ -86,7 +88,28 @@ class RouteBuilder extends Component {
   handleDrop = (ev) => {
     const { markers, dragId } = this.state;
 
-    const newMarkersState = dragDropOrdering(markers, dragId, +ev.target.id, this.waypointPrefix);
+    const newMarkersState = dragDropOrdering(
+      markers,
+      dragId,
+      +ev.target.id,
+      this.waypointPrefix
+    );
+
+    this.setState({
+      markers: sortUtil(newMarkersState, '-')
+    });
+  };
+
+  // adjust markers state on drop -MOBILE ONLY
+  handleShift = (dropId, dragId) => {
+    const { markers } = this.state;
+
+    const newMarkersState = dragDropOrdering(
+      markers,
+      dragId,
+      dropId,
+      this.waypointPrefix
+    );
 
     this.setState({
       markers: sortUtil(newMarkersState, '-')
@@ -105,7 +128,7 @@ class RouteBuilder extends Component {
     currMarker.name = markerToChange.name;
     const prevState = markers.filter((m) => m.id !== markerToChange.id);
     this.setState({
-      markers: sortUtil([...prevState, currMarker], "-")
+      markers: sortUtil([...prevState, currMarker], '-')
     });
   };
 
@@ -118,7 +141,7 @@ class RouteBuilder extends Component {
   render() {
     const { routeTitle, unitType, markers, currentDistance } = this.state;
     return (
-      <section className={"routeBuilderWrapper"}>
+      <section className={'routeBuilderWrapper'}>
         <DrawerMenu menuIcon={logo}>
           <ToolBar
             handleUnitType={this.handleUnitChange}
@@ -131,6 +154,7 @@ class RouteBuilder extends Component {
             removeWaypoint={this.handleRemoveWaypoint}
             handleDrag={this.handleDrag}
             handleDrop={this.handleDrop}
+            handleShift={this.handleShift}
             handleRouteTitleChange={this.handleRouteTitleChange}
             handleNameChange={this.handleNameChange}
             currentDistance={`${currentDistance} ${unitType}`}

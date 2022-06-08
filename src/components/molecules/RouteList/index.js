@@ -1,18 +1,21 @@
-import React, {useState} from 'react'
+import '../../../styles/routeList.css'
+
 import {
   MdDeleteOutline,
-  MdMenu,
   MdExpandLess,
-  MdExpandMore
+  MdExpandMore,
+  MdMenu
 } from 'react-icons/md';
+import React, {useEffect, useState} from 'react'
+import { VscTriangleDown, VscTriangleUp } from 'react-icons/vsc';
+
+import Button from '../../atoms/Button'
 import { FcDeleteDatabase } from 'react-icons/fc';
-import '../../../styles/routeList.css'
+import PropTypes from 'prop-types'
+import clsx from 'clsx'
 import { downloadBlob } from '../../../utils/common'
 import { gpxGenerator } from '../../../utils/gpxGenerator'
-import Button from '../../atoms/Button'
-import clsx from 'clsx'
 import { unitTypes } from '../../../constants/common'
-import PropTypes from 'prop-types'
 
 // route list functional component
 const RouteList = (props) => {
@@ -22,6 +25,7 @@ const RouteList = (props) => {
     removeWaypoint,
     handleDrag,
     handleDrop,
+    handleShift,
     handleRouteTitleChange,
     handleNameChange,
     currentDistance,
@@ -34,6 +38,11 @@ const RouteList = (props) => {
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [showDeleteAllMsg, setShowDeleteAllMsg] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (window) setIsMobile(window.innerWidth < 500)
+  },[])
 
   const handleShowInstructions = () => setShowInstructions(!showInstructions);
 
@@ -125,8 +134,8 @@ const RouteList = (props) => {
             </li>
             <li>Drag a waypoint to a new location</li>
             <li>
-              Rearrange the order of the waypoints with a simple drag and drop
-              of the card below
+              Rearrange the order of the waypoints with a click of the arrows on
+              mobile or drag and drop on desktop
             </li>
             <li>Rename your waypoints</li>
             <li>
@@ -175,7 +184,15 @@ const RouteList = (props) => {
                   onDrop={handleDrop}
                 >
                   <div className='waypointContent' id={mark.id}>
-                    <MdMenu id={mark.id} />
+                    <span className={'moveCardItems'}>
+                      <VscTriangleDown
+                        onClick={() => handleShift(mark.id, mark.id + 1)}
+                      />{' '}
+                      <VscTriangleUp
+                        onClick={() => handleShift(mark.id, mark.id - 1)}
+                      />
+                    {!isMobile && <MdMenu id={mark.id} />}
+                    </span>
                     <input
                       key={mark.id}
                       id={mark.id}

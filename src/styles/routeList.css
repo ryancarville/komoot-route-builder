@@ -265,6 +265,9 @@
     max-height: 100em;
   }
 
+  .moveCardItems {
+    display: flex;
+  }
   .routeDataWrapper {
     padding: 0 2em 0 2em;
   }

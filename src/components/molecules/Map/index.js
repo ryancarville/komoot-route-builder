@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
-import L from 'leaflet';
 import '../../../styles/map.css'
-import { unitTypes } from '../../../constants/common';
-import waypointMarker from '../../atoms/WaypointMarker'
+
+import React, { Component } from 'react';
+
+import L from 'leaflet';
 import LoadingScreen from '../../atoms/LoadingScreen'
 import PropTypes from 'prop-types';
+import { unitTypes } from '../../../constants/common';
+import waypointMarker from '../../atoms/WaypointMarker'
 
 // map class component
 class Map extends Component {
@@ -44,7 +46,7 @@ class Map extends Component {
         zoom: 15,
         layers: [
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 20,
+            maxZoom: 15,
             attribution: '© OpenStreetMap'
           })
         ]
