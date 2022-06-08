@@ -2,13 +2,13 @@ import "../../../styles/routeBuilder.css";
 
 import React, { Component } from "react";
 import { dragDropOrdering, sortUtil } from "../../../utils/common";
+import { markersAction, unitTypes } from "../../../constants/common";
 
 import DrawerMenu from "../../molecules/DrawerMenu";
 import Map from "../../molecules/Map";
 import RouteList from "../../molecules/RouteList";
 import ToolBar from "../ToolBar";
 import logo from "../../../images/logo.png";
-import { unitTypes } from "../../../constants/common";
 
 // class component for route builder
 class RouteBuilder extends Component {
@@ -44,7 +44,7 @@ class RouteBuilder extends Component {
 
   // delete selected waypoint from list
   handleRemoveWaypoint = (id) => {
-    if (id === 'all') this.setState({ markers: [], currentDistance: 0.0 });
+    if (id === markersAction.ALL) this.setState({ markers: [], currentDistance: 0.0 });
     else {
       const currWaypoint = this.state.markers.filter((mark) => mark.id !== id);
       const updatedIds = currWaypoint.map((point) => {

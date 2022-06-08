@@ -1,11 +1,11 @@
 import '../../../styles/map.css'
 
 import React, { Component } from 'react';
+import { distanceConstants, unitTypes } from '../../../constants/common';
 
 import L from 'leaflet';
 import LoadingScreen from '../../atoms/LoadingScreen'
 import PropTypes from 'prop-types';
-import { unitTypes } from '../../../constants/common';
 import waypointMarker from '../../atoms/WaypointMarker'
 
 // map class component
@@ -21,22 +21,21 @@ class Map extends Component {
     // add distance calculation func to polyline class
     L.Polyline = L.Polyline.include({
       getDistance: function (system) {
-        // distance in meters
-        var mDistance = 0,
-          length = this._latlngs.length;
-        for (var i = 1; i < length; i++) {
+        let mDistance = 0;
+        const length = this._latlngs.length;
+        for (let i = 1; i < length; i++) {
           mDistance += this._latlngs[i].distanceTo(this._latlngs[i - 1]);
         }
         // calculated miles or km
         if (system === unitTypes.miles) {
-          return mDistance / 1609.34;
+          return mDistance / distanceConstants.MILES;
         } else {
-          return mDistance / 1000;
+          return mDistance / distanceConstants.KM;
         }
       }
     });
   }
-
+  
   componentDidMount() {
     const { markers } = this.props;
     // only create the map if not already initialized

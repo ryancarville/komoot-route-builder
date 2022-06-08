@@ -8,6 +8,7 @@ import {
 } from 'react-icons/md';
 import React, {useEffect, useState} from 'react'
 import { VscTriangleDown, VscTriangleUp } from 'react-icons/vsc';
+import { markersAction, unitTypes } from '../../../constants/common'
 
 import Button from '../../atoms/Button'
 import { FcDeleteDatabase } from 'react-icons/fc';
@@ -15,7 +16,6 @@ import PropTypes from 'prop-types'
 import clsx from 'clsx'
 import { downloadBlob } from '../../../utils/common'
 import { gpxGenerator } from '../../../utils/gpxGenerator'
-import { unitTypes } from '../../../constants/common'
 
 // route list functional component
 const RouteList = (props) => {
@@ -65,7 +65,7 @@ const RouteList = (props) => {
     handleNameChange({ id: +id, name: value });
   };
 
-  // save the current markers and unit type to local storage
+  // save the current markers, route title and unit type to local storage
   const handleSaveRoute = () => {
     setIsSaving(true)
     const routeData = {
@@ -104,7 +104,7 @@ const RouteList = (props) => {
   }
 
   const handleDeleteAll = () => {
-    removeWaypoint('all');
+    removeWaypoint(markersAction.ALL);
     setShowDeleteAllMsg(false);
   }
 
