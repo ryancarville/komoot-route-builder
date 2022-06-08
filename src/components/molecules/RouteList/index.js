@@ -40,8 +40,17 @@ const RouteList = (props) => {
   const [showInstructions, setShowInstructions] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  // on load get the screen width for conditional elements
+  // also calculate the viewport height to allow for acuate height value
   useEffect(() => {
-    if (window) setIsMobile(window.innerWidth < 500)
+    if (window) setIsMobile(window.innerWidth < 500);
+    // add event listener on window resize
+    window.addEventListener('resize', () => {
+      // // calc the vh
+      let vh = window.innerHeight * 0.01;
+      // // set the value in the --vh custom property
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    });
   },[])
 
   const handleShowInstructions = () => setShowInstructions(!showInstructions);
