@@ -262,7 +262,7 @@
   }
 
   .routeList {
-    height: calc(var(--vh, 1vh) * 70);
+    max-height: calc(var(--vh, 1vh) * 70);
   }
 
   .moveCardItems {
