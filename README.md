@@ -1,3 +1,7 @@
+# Komoot Route Builder
+
+Simple router builder app for cross country runners
+
 # Getting Started with Komoot Route Builder
 
 ## Available Scripts
