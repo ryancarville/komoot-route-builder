@@ -37,6 +37,10 @@ class Map extends Component {
   }
 
   componentDidMount() {
+    // mock data fetch
+    setTimeout(() => {
+      this.setState({ isLoading: false });
+    }, 2000);
     const { markers } = this.props;
     // only create the map if not already initialized
     if (!!!this.map) {
@@ -49,12 +53,13 @@ class Map extends Component {
             attribution: '© OpenStreetMap'
           })
         ]
-      })
-        .locate({ setView: true, zoom: 15 })
-        .fitWorld();
+      }).fitWorld();
+
+      // set users location
+      this.map.locate({ setView: true, zoom: 15 });
 
       // add error handle is location not found
-      this.map.on('locationerror', this.handleLocationError);
+      // this.map.on('locationerror', this.handleLocationError);
 
       // add click event listener to map
       this.map.on('click', this.handleMapClick);
@@ -73,11 +78,6 @@ class Map extends Component {
         const currView = [markers[0].lat, markers[0].lng];
         this.map.setView(currView, 15);
       }
-
-      // mock data fetch
-      setTimeout(() => {
-        this.setState({ isLoading: false });
-      }, 2500);
     }
   }
 
